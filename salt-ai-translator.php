@@ -284,8 +284,11 @@ class Salt_AI_Translator_Plugin {
             $container->set('manager', $manager);
 
             // Cron hook'ları şimdi ekle, çünkü artık tüm bileşenler yüklü
-            add_action('salt_translate_posts_event', [$manager, 'handle_post_queue']);
-            add_action('salt_translate_terms_event', [$manager, 'handle_term_queue']);
+            //add_action('salt_translate_posts_event', [$manager, 'handle_post_queue']);
+           // add_action('salt_translate_terms_event', [$manager, 'handle_term_queue']);
+            add_action($manager::POSTS_CRON_HOOK, [$manager, 'handle_post_queue']);
+            add_action($manager::TERMS_CRON_HOOK, [$manager, 'handle_term_queue']);
+
         }
 
         if (!class_exists('SaltAI\Helper\Image')) {
@@ -905,6 +908,11 @@ class Salt_AI_Translator_Plugin {
         }
 
         return false;
+    }
+    public function is_external($url) {
+        $host = parse_url($url, PHP_URL_HOST);
+        $site_host = parse_url(home_url(), PHP_URL_HOST);
+        return $host && $host !== $site_host;
     }
 
     public function duplicate_post($post_id, $override = []) {

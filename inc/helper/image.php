@@ -45,7 +45,7 @@ class Image {
 
                 // translate image alt texts to other languages
                 if($integration->is_media_translation_enabled() && $plugin->options["seo"]["image_alttext"]["translate"]){
-                    $translations = function_exists('pll_get_post_translations') ? pll_get_post_translations($id) : [];
+                    $translations = function_exists('pll_get_post_translations') ? pll_get_post_translations($image["id"]) : [];
                     foreach ($translations as $lang => $translated_id) {
                         if ($lang === $integration->default_lang || !$translated_id) continue;
                         $translated_alt = $translator->translate($alt, $lang);
@@ -55,12 +55,6 @@ class Image {
                 }
             }
         }
-    }
-
-    function is_external($url) {
-        $host = parse_url($url, PHP_URL_HOST);
-        $site_host = parse_url(home_url(), PHP_URL_HOST);
-        return $host && $host !== $site_host;
     }
 
 }

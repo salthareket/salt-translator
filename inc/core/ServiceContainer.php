@@ -18,15 +18,15 @@ class ServiceContainer {
             error_log("Service '{$key}' not found in container.");
             return null;
         }
-
-        // Lazy load (closure ise çalıştır)
-        if (is_callable($this->services[$key])) {
-            $this->services[$key] = call_user_func($this->services[$key]);
-        }
         
         if (isset($this->factories[$key])) {
             $this->services[$key] = call_user_func($this->factories[$key]);
             return $this->services[$key];
+        }
+
+        // Lazy load (closure ise çalıştır)
+        if (is_callable($this->services[$key])) {
+            $this->services[$key] = call_user_func($this->services[$key]);
         }
 
         return $this->services[$key];
