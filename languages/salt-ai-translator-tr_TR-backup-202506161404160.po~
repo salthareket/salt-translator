@@ -1,0 +1,525 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Salt AI Translator\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-06-05 17:36+0000\n"
+"PO-Revision-Date: 2025-06-16 14:03+0000\n"
+"Last-Translator: \n"
+"Language-Team: Türkçe\n"
+"Language: tr_TR\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Loco https://localise.biz/\n"
+"X-Loco-Version: 2.8.0; wp-6.8.1; php-8.3.16\n"
+"X-Domain: salt-ai-translator"
+
+#: inc/integrations/polylang.php:594
+#, fuzzy, php-format
+#| msgid "%1$d out of %2$d content not translated to \"%3$s\"."
+msgid "%1$d out of %2$d posts not translated to \"%3$s\"."
+msgstr "2$d içeriğin %1$d'si \"%3$s\" olarak çevrilmedi."
+
+#: inc/integrations/polylang.php:587
+#, fuzzy, php-format
+#| msgid "%1$d content will be translated to \"%2$s\"."
+msgid "%1$d posts will be translated to \"%2$s\"."
+msgstr "1$d içeriği \"%2$s\" olarak çevrilecektir."
+
+#: inc/integrations/polylang.php:580
+#, fuzzy, php-format
+#| msgid ""
+#| "%1$d translated, total %2$d content will be retranslated to \"%3$s\"."
+msgid "%1$d translated, total %2$d posts will be retranslated to \"%3$s\"."
+msgstr "1$d çevrildi, toplam %2$d içerik \"%3$s\" olarak yeniden çevrilecek."
+
+#: admin/views/posts-ui.php:70
+#, php-format
+msgid "%1$d/%2$d translated"
+msgstr "1$d/%2$d çevrildi"
+
+#: admin/views/posts-ui.php:126 inc/core/TranslateQueueManager.php:307
+msgid "%d hour"
+msgid_plural "%d hours"
+msgstr[0] "%d saat"
+msgstr[1] "g saat"
+
+#: admin/views/posts-ui.php:132 inc/core/TranslateQueueManager.php:313
+msgid "%d minute"
+msgid_plural "%d minutes"
+msgstr[0] "d dakika"
+msgstr[1] "d dakika"
+
+#: admin/views/posts-ui.php:175
+msgid "%d post"
+msgid_plural "%d posts"
+msgstr[0] "%d gönderi"
+msgstr[1] "%d gönderi"
+
+#: admin/views/posts-ui.php:138 inc/core/TranslateQueueManager.php:319
+msgid "%d second"
+msgid_plural "%d seconds"
+msgstr[0] "%d saniye"
+msgstr[1] "d saniye"
+
+#: admin/views/settings-ui.php:429 admin/views/settings-ui.php:596
+msgid "(Optional)"
+msgstr "(İsteğe bağlı)"
+
+#: admin/views/terms-ui.php:25
+msgid "0 terms are untranslated in the selected language."
+msgstr "0 terim seçilen dilde çevrilmemiştir."
+
+#: admin/views/posts-ui.php:90
+msgid "Add to Queue"
+msgstr "Kuyruğa Ekle"
+
+#: inc/integrations/polylang.php:609
+#, fuzzy, php-format
+#| msgid "All %1$d content is already translated to \"%2$s\"."
+msgid "All %1$d posts is already translated to \"%2$s\"."
+msgstr "Tüm %1$d içeriği zaten \"%2$s\" olarak çevrilmiş."
+
+#: inc/integrations/polylang.php:603
+#, fuzzy, php-format
+#| msgid ""
+#| "All %1$d content is already translated to \"%2$s\". They will be "
+#| "retranslated."
+msgid ""
+"All %1$d posts is already translated to \"%2$s\". They will be retranslated."
+msgstr ""
+"Tüm %1$d içeriği zaten \"%2$s\" olarak çevrilmiş. Yeniden çevrilecekler."
+
+#: inc/translator/deepl.php:51
+msgid "All API keys failed. Please check your configuration."
+msgstr ""
+"Tüm API anahtarları başarısız oldu. Lütfen yapılandırmanızı kontrol edin."
+
+#: admin/views/settings-ui.php:489
+msgid "ALT text generation is disabled on localhost."
+msgstr "Localhost'ta ALT metin oluşturma devre dışı bırakıldı."
+
+#: salt-ai-translator.php:875
+msgid "An error occurred during the translation process."
+msgstr "Çeviri işlemi sırasında bir hata oluştu."
+
+#: inc/translator/deepl.php:77 inc/translator/openai.php:218
+#: inc/translator/openai.php:228
+msgid "API error – "
+msgstr "API hatası -"
+
+#: inc/translator/deepl.php:91
+msgid "API error – No response received."
+msgstr "API hatası - Yanıt alınamadı."
+
+#: admin/views/settings-ui.php:664
+msgid "API Key"
+msgstr "API Anahtarı"
+
+#: admin/views/settings-ui.php:659
+msgid "API Key Usage Status"
+msgstr "API Anahtarı Kullanım Durumu"
+
+#: admin/views/settings-ui.php:193
+msgid "API Keys"
+msgstr "API Anahtarları"
+
+#: admin/views/posts-ui.php:22 admin/views/settings-ui.php:143
+msgid "Automatic Multilingual Translation System — AI-Powered"
+msgstr "Otomatik Çok Dilli Çeviri Sistemi - Yapay Zeka Destekli"
+
+#: admin/views/settings-ui.php:312
+msgid "Automatically translate content on save."
+msgstr "Kaydetme sırasında içeriği otomatik olarak çevirin."
+
+#: admin/views/posts-ui.php:91
+msgid "Background CRON translation"
+msgstr "Arka plan CRON çevirisi"
+
+#: admin/views/settings-ui.php:706
+#| msgid "✓ Background translation queue"
+msgid "Background translation queue"
+msgstr "Arka plan çeviri kuyruğu"
+
+#: inc/translator/openai.php:58
+msgid "Balanced Mind"
+msgstr "Dengeli Zihin"
+
+#: inc/translator/openai.php:55
+msgid "Cautious Thinker"
+msgstr "Temkinli Düşünen"
+
+#: inc/translator/openai.php:63
+msgid "Chaos Mode"
+msgstr "Kaos Modu"
+
+#: admin/views/posts-ui.php:44
+msgid "Check Translation"
+msgstr "Çeviriyi Kontrol Edin"
+
+#: admin/views/posts-ui.php:105
+msgid "Completed at"
+msgstr "Şu adreste tamamlandı"
+
+#: admin/views/settings-ui.php:288
+msgid "Content Settings"
+msgstr "İçerik Ayarları"
+
+#: salt-ai-translator.php:873
+msgid "Content translated successfully."
+msgstr "İçerik başarıyla çevrildi."
+
+#: inc/translator/openai.php:59
+msgid "Creative Helper"
+msgstr "Yaratıcı Yardımcı"
+
+#: inc/translator/openai.php:57
+msgid "Curious Analyst"
+msgstr "Meraklı Analist"
+
+#: admin/views/settings-ui.php:710
+#| msgid "✓ Custom prompt"
+msgid "Custom prompt"
+msgstr "Özel istem"
+
+#: admin/views/settings-ui.php:511
+msgid ""
+"DeepL cannot generate ALT texts from images. It can only translate existing "
+"ALT text into other languages. To generate ALT texts automatically, please "
+"use OpenAI."
+msgstr ""
+"DeepL resimlerden ALT metinleri oluşturamaz. Yalnızca mevcut ALT metinlerini "
+"diğer dillere çevirebilir. ALT metinlerini otomatik olarak oluşturmak için "
+"lütfen OpenAI kullanın."
+
+#: admin/views/settings-ui.php:377
+msgid ""
+"DeepL cannot generate meta descriptions from content. It can only translate "
+"existing meta descriptions into other languages. To generate descriptions "
+"automatically, please use OpenAI."
+msgstr ""
+"DeepL içerikten meta açıklamaları oluşturamaz. Yalnızca mevcut meta "
+"açıklamaları diğer dillere çevirebilir. Açıklamaları otomatik olarak "
+"oluşturmak için lütfen OpenAI kullanın."
+
+#: admin/views/settings-ui.php:254
+msgid "Deepl Settings"
+msgstr "Deepl Ayarları"
+
+#: admin/views/posts-ui.php:143
+msgid "Done"
+msgstr "Bitti"
+
+#: inc/translator/openai.php:61
+msgid "Dreamer"
+msgstr "Dreamer"
+
+#: inc/translator/openai.php:205
+msgid "Empty key skipped."
+msgstr "Boş anahtar atlandı."
+
+#: inc/translator/openai.php:53
+msgid "Exact Copycat"
+msgstr "Tam Taklitçi"
+
+#: admin/views/settings-ui.php:317
+msgid "Exclude Post Types"
+msgstr "Gönderi Türlerini Hariç Tut"
+
+#: admin/views/settings-ui.php:335
+msgid "Exclude Posts"
+msgstr "Gönderileri Hariç Tut"
+
+#: admin/views/settings-ui.php:326
+msgid "Exclude Taxonomies"
+msgstr "Taksonomileri Hariç Tut"
+
+#: admin/views/settings-ui.php:342
+msgid "Exclude Terms"
+msgstr "Şartları hariç tut"
+
+#: admin/views/settings-ui.php:707
+#| msgid "✓ Faster API processing"
+msgid "Faster API processing"
+msgstr "Daha hızlı API işleme"
+
+#: admin/views/settings-ui.php:257
+msgid "Formality"
+msgstr "Resmiyet"
+
+#: admin/views/settings-ui.php:503
+msgid "Generate image alt text in the default language."
+msgstr "Varsayılan dilde resim alt metni oluşturun."
+
+#: admin/views/settings-ui.php:369
+msgid "Generate meta description in the default language if it does not exist."
+msgstr "Meta açıklama mevcut değilse varsayılan dilde oluşturun."
+
+#: admin/views/settings-ui.php:571
+msgid "Generate on save content."
+msgstr "Kaydetme içeriği oluşturun."
+
+#: admin/views/settings-ui.php:400
+msgid "Generate on save post"
+msgstr "Gönderiyi kaydederken oluştur"
+
+#: admin/views/settings-ui.php:152
+msgid "Get Pro 🚀"
+msgstr "Profesyonel Olun 🚀"
+
+#: inc/translator/openai.php:60
+msgid "Idea Generator"
+msgstr "Fikir Üreticisi"
+
+#: admin/views/settings-ui.php:474
+msgid "Image Alt Text Generation"
+msgstr "Resim Alt Metni Oluşturma"
+
+#: admin/views/posts-ui.php:87
+msgid "Instant AJAX translation"
+msgstr "Anında AJAX çevirisi"
+
+#: admin/views/posts-ui.php:103
+msgid "Language"
+msgstr "Dil"
+
+#: admin/views/posts-ui.php:147
+msgid "Last Scheduled Task"
+msgstr "Son Zamanlanmış Görev"
+
+#: inc/translator/deepl.php:20
+msgid "Let DeepL decide the tone (default)"
+msgstr "Tona DeepL karar versin (varsayılan)"
+
+#: inc/translator/openai.php:54
+msgid "Literal Bot"
+msgstr "Literal Bot"
+
+#: admin/views/settings-ui.php:150
+msgid "Media"
+msgstr "Medya"
+
+#: admin/views/settings-ui.php:709
+#| msgid "✓ Media ALT text AI"
+msgid "Media ALT text AI"
+msgstr "Medya ALT metni AI"
+
+#: admin/views/settings-ui.php:553
+#, php-format
+msgid ""
+"Media translation is not possible with %s. Please activate it if possible."
+msgstr "Medya çevirisi %s ile mümkün değil. Lütfen mümkünse etkinleştirin."
+
+#: admin/views/settings-ui.php:358
+msgid "Meta Description Generation"
+msgstr "Meta Açıklama Oluşturma"
+
+#: admin/views/settings-ui.php:219 admin/views/settings-ui.php:433
+#: admin/views/settings-ui.php:600
+msgid "Model"
+msgstr "Model"
+
+#: admin/views/settings-ui.php:159
+msgid "Multilanguage Plugin"
+msgstr "Çoklu Dil Eklentisi"
+
+#: admin/views/settings-ui.php:167
+msgid "No multilanguage plugin is installed."
+msgstr "Çoklu dil eklentisi yüklü değil."
+
+#: admin/views/settings-ui.php:205
+msgid "One key per line"
+msgstr "Her satır için bir tuş"
+
+#: admin/views/settings-ui.php:389
+msgid "Only regenerate if the content has changed."
+msgstr "Yalnızca içerik değişmişse yeniden oluşturun."
+
+#: admin/views/settings-ui.php:270
+msgid "Only supported in DE, FR, ES, IT, NL, PL, PT, RU"
+msgstr "Yalnızca DE, FR, ES, IT, NL, PL, PT, RU'da desteklenir"
+
+#: admin/views/settings-ui.php:212
+msgid "OpenAI Settings"
+msgstr "OpenAI Ayarları"
+
+#. Description of the plugin
+msgid "Otomatik çok dilli çeviri sistemi. OpenAI, DeepL vb. destekler."
+msgstr "Otomatik çok dilli çeviri sistemi. OpenAI, DeepL vb. destekler."
+
+#: inc/translator/openai.php:64
+msgid "Overdrive Madness"
+msgstr "Overdrive Çılgınlığı"
+
+#: admin/views/settings-ui.php:185
+msgid "Please select"
+msgstr "Lütfen seçiniz"
+
+#: admin/views/posts-ui.php:29
+msgid "Post Translation"
+msgstr "Çeviri Gönder"
+
+#: inc/translator/deepl.php:23
+msgid "Prefer formal tone when ambiguous"
+msgstr "Belirsiz olduğunda resmi tonu tercih edin"
+
+#: inc/translator/deepl.php:24
+msgid "Prefer informal tone when ambiguous"
+msgstr "Belirsiz olduğunda gayri resmi tonu tercih edin"
+
+#: admin/views/settings-ui.php:588
+msgid "Preserve existing ALT texts. Do not regenerate."
+msgstr "Mevcut ALT metinlerini koruyun. Yeniden oluşturmayın."
+
+#: admin/views/settings-ui.php:586
+msgid "Preserve existing ALT texts. Do not translate."
+msgstr "Mevcut ALT metinlerini koruyun. Çeviri yapmayın."
+
+#: admin/views/settings-ui.php:422
+msgid "Preserve existing meta descriptions. Do not regenerate."
+msgstr "Mevcut meta açıklamaları koruyun. Yeniden oluşturmayın."
+
+#: admin/views/posts-ui.php:115
+msgid "Processing"
+msgstr "İşleme"
+
+#: admin/views/posts-ui.php:106
+msgid "Processing Time"
+msgstr "İşlem Süresi"
+
+#: inc/translator/openai.php:56
+msgid "Professional Advisor"
+msgstr "Profesyonel Danışman"
+
+#: admin/views/settings-ui.php:215 admin/views/settings-ui.php:429
+#: admin/views/settings-ui.php:596
+msgid "Prompt"
+msgstr "İstem"
+
+#: admin/views/settings-ui.php:151
+msgid "Quotas"
+msgstr "Kotalar"
+
+#: admin/views/settings-ui.php:300
+msgid "Retranslate existing content by overwriting it."
+msgstr "Mevcut içeriğin üzerine yazarak yeniden çevirin."
+
+#: admin/views/settings-ui.php:708
+#| msgid "✓ Reusable blocks + FSE support"
+msgid "Reusable blocks + FSE support"
+msgstr "Yeniden kullanılabilir bloklar + FSE desteği"
+
+#: admin/views/posts-ui.php:21 admin/views/settings-ui.php:142
+msgid "SALT AI TRANSLATOR"
+msgstr "SALT AI ÇEVIRMEN"
+
+#. Name of the plugin
+msgid "Salt AI Translator"
+msgstr "Salt Yapay Zeka Çevirmeni"
+
+#: admin/views/settings-ui.php:275 admin/views/settings-ui.php:635
+msgid "Save"
+msgstr "Kaydet"
+
+#: admin/views/posts-ui.php:39
+msgid "Select a language to translate"
+msgstr "Çevirmek için bir dil seçin"
+
+#: admin/views/terms-ui.php:6
+msgid "Select Language"
+msgstr "Dil Seçiniz"
+
+#: admin/views/posts-ui.php:36
+msgid "Select Target Language"
+msgstr "Hedef Dili Seçin"
+
+#: admin/views/settings-ui.php:355
+msgid "SEO Settings"
+msgstr "SEO Ayarları"
+
+#: admin/views/settings-ui.php:149
+msgid "Settings"
+msgstr "Ayarlar"
+
+#: admin/views/terms-ui.php:32
+msgid "Start Translation"
+msgstr "Çeviriye Başla"
+
+#: admin/views/posts-ui.php:104
+msgid "Started at"
+msgstr "Başladı"
+
+#: admin/views/posts-ui.php:107 admin/views/settings-ui.php:665
+msgid "Status"
+msgstr "Durum"
+
+#: admin/views/settings-ui.php:712
+msgid "Switch to Pro"
+msgstr "Pro'ya geç"
+
+#: admin/views/settings-ui.php:234 admin/views/settings-ui.php:448
+#: admin/views/settings-ui.php:615
+msgid "Temperature"
+msgstr "Sıcaklık"
+
+#: admin/views/terms-ui.php:4
+msgid "Term Translation Check"
+msgstr "Terim Çeviri Kontrolü"
+
+#. Author of the plugin
+msgid "Tolga Koçak"
+msgstr "Tolga Koçak"
+
+#: admin/views/posts-ui.php:102
+msgid "Total"
+msgstr "Toplam"
+
+#: admin/views/posts-ui.php:86
+msgid "Translate Now"
+msgstr "Şimdi Çevir"
+
+#: admin/views/settings-ui.php:569
+msgid "Translate on save content."
+msgstr "İçeriği kaydederken çevirin."
+
+#: admin/views/settings-ui.php:411 admin/views/settings-ui.php:548
+msgid "Translate to other languages"
+msgstr "Diğer dillere çevir"
+
+#: admin/views/terms-ui.php:18
+msgid "Translation Check"
+msgstr "Çeviri Kontrolü"
+
+#: admin/views/settings-ui.php:148 admin/views/settings-ui.php:183
+msgid "Translator"
+msgstr "Çevirmen"
+
+#: inc/translator/openai.php:227
+msgid "Unknown error"
+msgstr "Bilinmeyen hata"
+
+#: inc/translator/deepl.php:22
+msgid "Use a more casual and friendly tone (e.g. for friends)"
+msgstr "Daha rahat ve arkadaşça bir ton kullanın (örneğin arkadaşlar için)"
+
+#: inc/translator/deepl.php:21
+msgid "Use a more formal and respectful tone (e.g. business language)"
+msgstr "Daha resmi ve saygılı bir ton kullanın (örn. iş dili)"
+
+#: inc/translator/openai.php:224
+msgid "Valid"
+msgstr "Geçerli"
+
+#: inc/translator/deepl.php:85
+#, php-format
+msgid "Valid – %s%% used (%d/%d)"
+msgstr "Geçerli - %s%% kullanıldı (%d/%d)"
+
+#: admin/views/settings-ui.php:704
+msgid "What's included in Salt AI Translator PRO"
+msgstr "Salt AI Translator PRO'ya neler dahildir"
+
+#: inc/translator/openai.php:62
+msgid "Wild Artist"
+msgstr "Vahşi Sanatçı"
