@@ -111,7 +111,7 @@ class SEOIntegration{
 
         $original = $value[0] ?? '';
 
-        $translated = get_post_meta($object_id, "_salt_metadesc_{$current_lang}", true);
+        $translated = get_post_meta($object_id, "_salt_image_alt_{$current_lang}", true);
         $translated =  !empty($translated) ? $translated : $original;
 
         return [$translated];
@@ -119,8 +119,8 @@ class SEOIntegration{
 
 
 
-    public function get_meta_description(int $post_id, string $lang = "", string $type = "post"): ?string {
-        $meta_key = !empty($lang) ? '_salt_metadesc_'.$lang : "_yoast_wpseo_metadesc";
+    public function get_meta_description(int $id, string $lang = "", string $type = "post"): ?string {
+        $meta_key = !empty($lang) ? '_salt_metadesc_' . $lang : '_yoast_wpseo_metadesc';
         if ($type === 'term') {
             return get_term_meta($id, $meta_key, true) ?: null;
         }
