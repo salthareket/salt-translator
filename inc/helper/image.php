@@ -59,7 +59,7 @@ class Image {
                     if($integration->is_media_translation_enabled()){
                         $translations = function_exists('pll_get_post_translations') ? pll_get_post_translations($image["id"]) : [];
                         if ( ! isset($translations[$lang]) || empty($translations[$lang]) ) {
-                            $new_image_id = $plugin->duplicate_post($image_id);
+                            $new_image_id = $plugin->duplicate_post($image["id"]);
                             pll_set_post_language($new_image_id, $lang);
                             $translations[$lang] = $new_image_id;
                             pll_save_post_translations($translations);
