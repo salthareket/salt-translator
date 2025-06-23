@@ -92,6 +92,12 @@
                     </button>
                 </div>
 
+                <table id="results-ui" class="results-ui table" style="display:none;">
+                    <tbody>
+
+                    </tbody>
+                </table>
+
             </div>
             
         </div>

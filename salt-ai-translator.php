@@ -518,6 +518,7 @@ class Salt_AI_Translator_Plugin {
             if (($this->options['translator'] ?? '') === 'openai' && $prompt && method_exists($translator, 'set_custom_prompt')) {
                 $translator->set_custom_prompt($prompt);
             }
+            $this->log($post_id." postunun metasından ".$lang." diline ceviri isteği geldi.");
             $integration->translate_post($post_id, $lang);
             wp_send_json_success();
         } catch (Exception $e) {
@@ -611,8 +612,71 @@ class Salt_AI_Translator_Plugin {
     public function seo_page(){
     }
 
-    
 
+    private function render_post_row_html($post_id, $post_id_translated = null) {
+        $post = get_post($post_id);
+        if (!$post) return '';
+
+        $thumbnail = get_the_post_thumbnail($post_id, [60, 60]);
+        $post_type = get_post_type($post);
+        $title = get_the_title($post_id);
+        $title_translated = $post_id_translated ? get_the_title($post_id_translated) : '—';
+
+        ob_start();
+        ?>
+        <tr>
+            <td style="padding: 6px; vertical-align: middle;width:60px;">
+                <span style="display:inline-block;width:60px;height:60px;background:#eee;text-align:center;line-height:60px;border-radius:12px;overflow:hidden;">
+                <?php 
+                if (!$thumbnail) {
+                   echo $thumbnail;
+                }
+                ?>
+                </span>    
+            </td>
+            <td style="padding: 6px; vertical-align: middle;">#<?php echo esc_html($post_id); ?></td>
+            <td style="padding: 6px; vertical-align: middle;white-space: nowrap; font-size:12px; font-weight:600;text-transform: uppercase;"><?php echo esc_html($post_type); ?></td>
+            <td style="padding: 6px; vertical-align: middle;">
+                <div style="color:#888;"><?php echo esc_html($title); ?></div>
+                <strong style="color:#000;"><?php echo esc_html($title_translated); ?></strong>
+            </td>
+        </tr>
+        <?php
+        return ob_get_clean();
+    }
+    private function render_term_row_html($term_id, $term_id_translated = null) {
+        $term = get_term($term_id);
+        if (!$term || is_wp_error($term)) return '';
+
+        $term_type = $term->taxonomy;
+        $term_name = $term->name;
+        $term_name_translated = '—';
+
+        if ($term_id_translated) {
+            $translated = get_term($term_id_translated);
+            if ($translated && !is_wp_error($translated)) {
+                $term_name_translated = $translated->name;
+            }
+        }
+
+        ob_start();
+        ?>
+        <tr>
+            <td style="padding: 6px; vertical-align: middle;width:60px;">
+                <span style="display:inline-block;width:60px;height:60px;background:#eee;text-align:center;line-height:60px;border-radius:12px;overflow:hidden;">
+                    <span style="font-size:18px; font-weight: bold; color: #999;">T</span>
+                </span>    
+            </td>
+            <td style="padding: 6px; vertical-align: middle;">#<?php echo esc_html($term_id); ?></td>
+            <td style="padding: 6px; vertical-align: middle;white-space: nowrap; font-size:12px; font-weight:600;text-transform: uppercase;"><?php echo esc_html($term_type); ?></td>
+            <td style="padding: 6px; vertical-align: middle;">
+                <div style="color:#888;"><?php echo esc_html($term_name); ?></div>
+                <strong style="color:#000;"><?php echo esc_html($term_name_translated); ?></strong>
+            </td>
+        </tr>
+        <?php
+        return ob_get_clean();
+    }
 
 
 
@@ -652,8 +716,9 @@ class Salt_AI_Translator_Plugin {
         }
 
         try {
-            $integration->translate_post($post_id, $lang);
-            wp_send_json_success();
+            $post_id_translated = $integration->translate_post($post_id, $lang);
+            $html = $this->render_post_row_html($post_id, $post_id_translated);
+            wp_send_json_success(["html" => $html]);
         } catch (Exception $e) {
             wp_send_json_error($e->getMessage());
         }
@@ -753,8 +818,9 @@ class Salt_AI_Translator_Plugin {
         }
 
         try {
-            $integration->translate_term($term_id, $taxonomy, $lang);
-            wp_send_json_success();
+            $term_id_translated = $integration->translate_term($term_id, $taxonomy, $lang);
+            $html = $this->render_term_row_html($term_id, $term_id_translated);
+            wp_send_json_success(["html" => $html]);
         } catch (Exception $e) {
             wp_send_json_error($e->getMessage());
         }
@@ -1133,6 +1199,20 @@ class Salt_AI_Translator_Plugin {
         $translated = get_post_meta($post->ID, "_yoast_wpseo_metadesc_{$current_lang}", true);
         return !empty($translated) ? $translated : $desc;
     }
+
+    public function decode_html_entities($text) {
+        $text = preg_replace('/u([0-9a-fA-F]{4})/', '\\\\u$1', $text);
+        $text = json_decode('"' . $text . '"');
+        return html_entity_decode($text);
+    }
+    public function encode_html_entities($text) {
+        $text = json_encode($text, JSON_UNESCAPED_UNICODE);
+        $text = substr($text, 1, -1);
+        $text = preg_replace('/\\\\\\\\u([0-9a-fA-F]{4})/', '\\\\u$1', $text);
+        return $text;
+    }
+
+
 
 
     //Pro Features

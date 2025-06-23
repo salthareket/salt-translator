@@ -95,7 +95,7 @@ class Translator {
             $data = json_decode(wp_remote_retrieve_body($response), true);
 
             if ($code === 200 && isset($data['choices'][0]['message']['content'])) {
-                $this->container->get("plugin")->log(">>>>>>> ".$data['choices'][0]['message']['content']);
+                $this->container->get("plugin")->log(">Çevrilen ".$this->decode_html_entities($data['choices'][0]['message']['content']));
                 return $this->decode_html_entities($data['choices'][0]['message']['content']);
             }
 
@@ -120,15 +120,18 @@ class Translator {
     public function translate($text = "", $to = 'en'): string {
         $options = $this->container->get("plugin")->options;
 
-        $this->container->get("plugin")->log("translate(".$text.", ".$to.")");
-        $this->container->get("plugin")->log(gettype($text));
-
         //if (!is_string($text) || trim($text) === '' || !$this->should_translate($text) || empty($text)) return $text;
         $text = is_null($text)?"":$text;
-        $text = html_entity_decode($text, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+        
+        //$text = json_decode('"' . $text . '"');
+        //$text = html_entity_decode($text);
+        //$text = $this->decode_html_entities($text);
+        //$text = html_entity_decode($text, ENT_QUOTES | ENT_HTML5, 'UTF-8');
         if (!$this->should_translate($text)) return $text;
 
-            //$system = "You are a professional translator for website content. Only translate the text without adding, removing, or modifying meaning. Do not generate HTML. Return only the plain translated text.";
+        $this->container->get("plugin")->log(" bu bakılıyo: ".$text);
+
+        //$system = "You are a professional translator for website content. Only translate the text without adding, removing, or modifying meaning. Do not generate HTML. Return only the plain translated text.";
         $system = "You are a professional website content translator. The input may contain HTML tags. Do NOT translate or alter any HTML tags or attributes. Only translate the visible text between the tags, preserving the exact HTML structure. Never add or remove tags, spaces, or punctuation. Return only the translated content with the original HTML fully intact.  Never encode or escape characters like <, >, &, \", or return unicode sequences like \\u003c.";
 
             if (!empty($options["prompt"])) {

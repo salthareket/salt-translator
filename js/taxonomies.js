@@ -15,6 +15,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const viewer = document.getElementById("salt-translation-viewer");
 
+    const resultsTable = document.querySelector('#results-ui');
+    const resultsTableBody = document.querySelector('#results-ui tbody');
+
     const queue_initial_total = document.getElementById("queue_initial_total");
     const queue_language = document.getElementById("queue_language");
     const queue_started_at = document.getElementById("queue_started_at");
@@ -42,6 +45,9 @@ document.addEventListener('DOMContentLoaded', function () {
         viewer.classList.add("salt-spinner");
         btns.style.display = 'none';
         statusText.innerText = '';
+
+        resultsTableBody.innerHTML = '';
+        resultsTable.style.display = 'none';
 
         const langLabel = langSelect.options[langSelect.selectedIndex].text;
 
@@ -94,6 +100,9 @@ document.addEventListener('DOMContentLoaded', function () {
         btns.style.display = 'none';
         progress.style.display = 'flex';
 
+        resultsTableBody.innerHTML = '';
+        resultsTable.style.display = 'table';
+
         let total     = untranslatedTerms.length;
         let completed = 0;
 
@@ -134,6 +143,11 @@ document.addEventListener('DOMContentLoaded', function () {
             // Durum metnini güncelle (isteğe bağlı)
             statusText.innerHTML = `<strong>${completed}/${total} çevrildi</strong>`;
 
+            if (res.data.html) {
+                resultsTableBody.insertAdjacentHTML('beforeend', res.data.html);
+            }
+
+
             // Sonraki
             translateNext();
           })
@@ -158,6 +172,9 @@ document.addEventListener('DOMContentLoaded', function () {
         btns.style.display = 'none';
         progress.style.display = 'flex';
         langSelector.style.display = 'none';
+
+        resultsTableBody.innerHTML = '';
+        resultsTable.style.display = 'none';
 
         statusText.innerHTML = `<strong>Preparing...</strong>`;
         
