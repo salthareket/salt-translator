@@ -132,7 +132,8 @@ class Integration {
 	               foreach ($block['attrs']['data'] as $key => $val) {
 	                    $field_key = isset($block['attrs']['data']["_" . $key]) ? $block['attrs']['data']["_" . $key] : null;
 	                   
-						if ($field_key && (($plugin->options["seo"]["image_alttext"]["generate"] && $this->should_translate($val)) || !$plugin->options["seo"]["image_alttext"]["generate"])){// && $this->should_translate($val)) {
+						//if ($field_key && (($plugin->options["seo"]["image_alttext"]["generate"] && $this->should_translate($val)) || !$plugin->options["seo"]["image_alttext"]["generate"])){
+						if ($field_key && $plugin->options["seo"]["image_alttext"]["generate"] && !empty($val)){
 						    $field_type = $this->get_acf_field_type($field_key);
                             
                             if($plugin->options["seo"]["image_alttext"]["generate"]){

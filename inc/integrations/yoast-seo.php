@@ -118,7 +118,6 @@ class SEOIntegration{
     }
 
 
-
     public function get_meta_description(int $id, string $lang = "", string $type = "post"): ?string {
         $meta_key = !empty($lang) ? '_salt_metadesc_' . $lang : '_yoast_wpseo_metadesc';
         if ($type === 'term') {
@@ -151,6 +150,7 @@ class SEOIntegration{
         $ml_plugin = $plugin->ml_plugin["key"];
         $options = $plugin->options;
         $integration = $this->container->get("integration");
+        $translator = $this->container->get('translator');
 
         if($options["seo"]["meta_desc"]["preserve"]){
             if(!empty($this->get_meta_description($id))){
@@ -172,19 +172,20 @@ class SEOIntegration{
             $title   = qtranxf_use($integration->default_language, $title, false, false);
             $content = qtranxf_use($integration->default_language, $content, false, false);
         }
-        $rendered = apply_filters('the_content', $content);
-        $clean = wp_strip_all_tags($rendered);
-        $clean = preg_replace('/\s+/', ' ', $clean); // fazla boşlukları temizle
-        $clean = trim($clean);
-        $clean = mb_substr($clean, 0, 1000); // fazla uzamasın
+        $content = apply_filters('the_content', $content);
+        $content = wp_strip_all_tags($content);
+        $content = preg_replace('/\s+/', ' ', $content); // fazla boşlukları temizle
+        $content = trim($content);
+        $content = mb_substr($content, 0, 1000); // fazla uzamasın
 
-        if(empty($clean) && $integration->contents){
-            $clean = implode(" ", $integration->contents);
+        if(empty($content) && $integration->contents){
+            $content = implode(" ", $integration->contents);
         }
 
-        $plugin->log($clean);
+        $plugin->log($content);
 
-        $system = "You are an assistant that generates SEO meta descriptions. Keep them under 155 characters, clear, informative, and natural. Do not return anything except the description. Do not include quote characters at the start or end. No explanations.";
+        $system = $translator->prompts["meta_desc"]["system"]();
+        /*$system = "You are an assistant that generates SEO meta descriptions. Keep them under 155 characters, clear, informative, and natural. Do not return anything except the description. Do not include quote characters at the start or end. No explanations.";
 
         if(!empty($options["seo"]["meta_desc"]["prompt"])){
             $system .= $options["seo"]["meta_desc"]["prompt"];
@@ -193,30 +194,26 @@ class SEOIntegration{
         if ($title) {
             $user .= "\n\nTitle: " . $title;
         }
-        $user .= "\n\nContent:\n" . trim($clean);
+        $user .= "\n\nContent:\n" . trim($clean);*/
+
+        $user = $translator->prompts["meta_desc"]["user"]("", $title, $content);
 
         $messages = [
             ['role' => 'system', 'content' => $system],
             ['role' => 'user', 'content' => $user],
         ];
-
         $body = json_encode([
             'model' => $options["seo"]["meta_desc"]["model"] ?? 'gpt-4',
             'messages' => $messages,
             'temperature' => (float) $options["seo"]["meta_desc"]["temperature"] ?? 0.5,
         ]);
 
-        // OpenAI API isteği
-        $translator = $this->container->get('translator');
         $description = $translator->request($body);
-
-        // Açıklama dönerse geri ver
         if (!empty($description) && is_string($description)) {
             $description = trim($description);
             $this->update_meta_description($id, $description);
             return $description;
         }
-
         return null;
     }
 

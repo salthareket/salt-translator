@@ -534,10 +534,10 @@ if (!empty($selected_terms)) {
 			    <?php
 			    $image_alttext_translate_disabled = false;
 			    $image_alttext_translate = $options["seo"]["image_alttext"]["translate"];
-			    if(!$this->container->get("integration")->is_media_translation_enabled()){
+			    /*if(!$this->container->get("integration")->is_media_translation_enabled()){
 			    	$image_alttext_translate_disabled = true;
 			    	$image_alttext_translate = false;
-			    }
+			    }*/
 			    ?>
 			    <div class="salt-form-group">
 					<label class="salt-label" for="seo_translate_image_alttext_translate">
@@ -548,13 +548,22 @@ if (!empty($selected_terms)) {
 				            <?= checked($image_alttext_translate ?? '', 1, false); ?> <?= $image_alttext_translate_disabled?"disabled":""?>>
 				        <strong><?php _e('Translate to other languages', 'salt-ai-translator'); ?></strong>
 				    </label>
+				    
 				    <?php
-				    if($image_alttext_translate_disabled){ ?>
+				    if(!$this->container->get("integration")->is_media_translation_enabled()){ ?>
+				        <div class="text-primary">
+				      	    <?php printf(__('Multilingual media management is not enabled on %s, but ALT text will be generated for each language.', 'salt-ai-translator'), "<strong>".$this->ml_plugin["name"]."</strong>"); ?>
+				        </div>
+				    <?php 
+				    }
+				    ?>
+				    <?php
+				    /*if($image_alttext_translate_disabled){ ?>
 				        <div class="text-danger">
 				      	    <?php printf(__('Media translation is not possible with %s. Please activate it if possible.', 'salt-ai-translator'), "<strong>".$this->ml_plugin["name"]."</strong>"); ?>
 				        </div>
 				    <?php 
-				    }
+				    }*/
 				    ?>
 			    </div>
 
