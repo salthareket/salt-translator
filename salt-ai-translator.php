@@ -640,6 +640,9 @@ class Salt_AI_Translator_Plugin {
                 <div style="color:#888;"><?php echo esc_html($title); ?></div>
                 <strong style="color:#000;"><?php echo esc_html($title_translated); ?></strong>
             </td>
+            <td style="padding: 6px; vertical-align: middle;">
+                <a href="<?php echo esc_url(get_permalink((int) $title_translated)); ?>" class="salt-button salt-primary" target="_blank">Visit</a>
+            </td>
         </tr>
         <?php
         return ob_get_clean();
@@ -648,7 +651,7 @@ class Salt_AI_Translator_Plugin {
         $term = get_term($term_id);
         if (!$term || is_wp_error($term)) return '';
 
-        $term_type = $term->taxonomy;
+        $taxonomy = $term->taxonomy;
         $term_name = $term->name;
         $term_name_translated = '—';
 
@@ -668,10 +671,13 @@ class Salt_AI_Translator_Plugin {
                 </span>    
             </td>
             <td style="padding: 6px; vertical-align: middle;">#<?php echo esc_html($term_id); ?></td>
-            <td style="padding: 6px; vertical-align: middle;white-space: nowrap; font-size:12px; font-weight:600;text-transform: uppercase;"><?php echo esc_html($term_type); ?></td>
+            <td style="padding: 6px; vertical-align: middle;white-space: nowrap; font-size:12px; font-weight:600;text-transform: uppercase;"><?php echo esc_html($taxonomy); ?></td>
             <td style="padding: 6px; vertical-align: middle;">
                 <div style="color:#888;"><?php echo esc_html($term_name); ?></div>
                 <strong style="color:#000;"><?php echo esc_html($term_name_translated); ?></strong>
+            </td>
+            <td style="padding: 6px; vertical-align: middle;">
+                <a href="<?php echo esc_url(get_term_link((int) $term_id_translated, $taxonomy)); ?>" target="_blank">Visit</a>
             </td>
         </tr>
         <?php

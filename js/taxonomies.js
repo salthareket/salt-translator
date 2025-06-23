@@ -113,6 +113,7 @@ document.addEventListener('DOMContentLoaded', function () {
             //alert(`${total} içerik "${lang}" diline çevrildi!`);
             statusText.innerHTML = "<strong class='text-success'>Completed</strong>";
             langSelector.style.display = 'block';
+            resultsTableBody.insertAdjacentHTML('beforeend', "<tr><td colspan='5' style='text-align:center;'>COMPLETED</td></tr>");
             return;
           }
 

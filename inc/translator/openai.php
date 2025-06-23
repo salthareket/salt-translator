@@ -95,8 +95,12 @@ class Translator {
             $data = json_decode(wp_remote_retrieve_body($response), true);
 
             if ($code === 200 && isset($data['choices'][0]['message']['content'])) {
-                $this->container->get("plugin")->log(">Çevrilen ".$this->decode_html_entities($data['choices'][0]['message']['content']));
-                return $this->decode_html_entities($data['choices'][0]['message']['content']);
+                //$this->container->get("plugin")->log("output: ".$data['choices'][0]['message']['content']);
+                //$this->container->get("plugin")->log("------------------------------------");
+                //return $this->decode_html_entities($data['choices'][0]['message']['content']);
+                $text = $data['choices'][0]['message']['content'];
+                $text = str_replace(['<wrapper>', '</wrapper>'], '', $text);
+                return $text;
             }
 
             // OpenAI kota/limit/plan dolmuş olabilir -> error message kontrolü
@@ -125,14 +129,34 @@ class Translator {
         
         //$text = json_decode('"' . $text . '"');
         //$text = html_entity_decode($text);
-        //$text = $this->decode_html_entities($text);
+        ////$text = $this->decode_html_entities($text);
         //$text = html_entity_decode($text, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+        $text = preg_replace_callback('/\\\\u([0-9a-fA-F]{4})/', function ($match) {
+            return mb_convert_encoding(pack('H*', $match[1]), 'UTF-8', 'UCS-2BE');
+        }, $text);
         if (!$this->should_translate($text)) return $text;
 
-        $this->container->get("plugin")->log(" bu bakılıyo: ".$text);
+        $text = "<wrapper>" . $text . "</wrapper>";
+        //$this->container->get("plugin")->log("input: ".$text);
+
+        //$text = $this->decode_html_entities($text);
+
+        //$this->container->get("plugin")->log(" bu bakılıyo: ".$text);
 
         //$system = "You are a professional translator for website content. Only translate the text without adding, removing, or modifying meaning. Do not generate HTML. Return only the plain translated text.";
-        $system = "You are a professional website content translator. The input may contain HTML tags. Do NOT translate or alter any HTML tags or attributes. Only translate the visible text between the tags, preserving the exact HTML structure. Never add or remove tags, spaces, or punctuation. Return only the translated content with the original HTML fully intact.  Never encode or escape characters like <, >, &, \", or return unicode sequences like \\u003c.";
+        /*$system = "You are a professional website content translator. The input may contain HTML tags. Do NOT translate or alter any HTML tags or attributes. Only translate the visible text between the tags, preserving the exact HTML structure. Never add or remove tags, spaces, or punctuation. Return only the translated content with the original HTML fully intact.  Never encode or escape characters like <, >, &, \", or return unicode sequences like \\u003c.";*/
+        $system = "You are a professional website content translator. The input may contain HTML and WordPress shortcodes.
+        - Do NOT translate or alter any HTML tags or their attributes.
+        - Do NOT translate or alter any WordPress shortcodes (e.g. [shortcode], [contact_form id='x']).
+        - Do NOT translate or alter any attribute values such as 'class', 'id', 'data-*', 'href', 'src', 'style', 'title', etc.
+        - Only translate the **visible text content** between HTML tags. Keep the original HTML structure exactly the same.
+        - Do NOT add or remove any tags, attributes, shortcodes, spaces, or punctuation.
+        - NEVER encode or escape characters like <, >, &, ', or return unicode sequences like \\u003c.
+        - Return the result as HTML, preserving the original formatting and layout.
+        - Even if the input contains a single HTML tag or short snippet, always treat it as full HTML and preserve the entire structure.
+        - Always treat the input as HTML, even if it contains a single tag or a short snippet. Do not remove or flatten the structure.
+        Your job is to translate only the human-visible content, leaving all structure and code intact.";
+
 
             if (!empty($options["prompt"])) {
                 $system .= " " . trim($options["prompt"]);
@@ -174,8 +198,8 @@ class Translator {
 
     public function decode_html_entities($text) {
         return str_replace(
-            ['\\u003c', '\\u003e', '\\u0026', '\\"', "\\n", "\\t"],
-            ['<', '>', '&', '"', '', ''],
+            ['\\u003c', '\\u003e', '\\u0026', '\\u0022', '\\"', "\\n", "\\t"],
+            ['<', '>', '&', '"', '"', '', ''],
             $text
         );
     }

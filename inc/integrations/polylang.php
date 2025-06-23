@@ -492,7 +492,7 @@ class Integration {
 
         $content_changed = $plugin->is_content_changed($post);
 
-	    if (has_blocks($post)) {
+	    if (has_blocks($post->post_content)) {
 	        $content = $this->translate_blocks($post->post_content, $lang);
 	    }else{
 	        if($plugin->options["seo"]["image_alttext"]["generate"]){
@@ -569,11 +569,49 @@ class Integration {
 		$plugin = $this->container->get("plugin");
 		$options = $plugin->options;
 
-		$plugin->log("------------------------------------");
-		$plugin->log("Started to translate_term(".$term_id.", '".$taxonomy."', '".$lang."')");
-
 		$source_lang = pll_get_term_language($term_id);
-		$plugin->log("Term dili (".$source_lang.")");
+
+
+
+
+		if($source_lang != $this->default_language){
+            $term_id = pll_get_term($term_id, $this->default_language);
+	    }
+
+	    $term = get_term($term_id);
+	    if (!$term) {
+	    	$GLOBALS['salt_ai_doing_translate'] = false;
+		    return 0;
+		}
+
+		$name = $this->translate_text($term->name, $lang, "These are taxonomy terms from a WordPress site under the '{$taxonomy}' taxonomy. Translate accordingly. Dont add html tags.");
+		$name = $plugin->sanitize_translated_string($name);
+		$description = $this->translate_text($term->description, $lang, "These are taxonomy terms from a WordPress site under the '{$taxonomy}' taxonomy. Translate accordingly.");
+        $slug = sanitize_title($name);
+		$existing_term = get_term_by('slug', $slug, $taxonomy);
+		if ($existing_term && $existing_term->term_id != $term_id) {
+		    $slug .= '-' . $lang;
+		}
+
+	    $lang_term_id = pll_get_term($term_id, $lang);
+	    if(!$lang_term_id ){
+	    	$override = ["name" => $name, "slug" => $slug."-".$lang, "description" => $description];
+	    	$lang_term_id = $plugin->duplicate_term($term_id, $override);
+	    	if(!$lang_term_id){
+	    		$GLOBALS['salt_ai_doing_translate'] = false;
+	    		return 0;
+	    	} 
+	    	pll_set_term_language($lang_term_id, $lang);
+			$translations = pll_get_term_translations($term_id);
+			$translations[$lang] = $lang_term_id;
+			pll_save_term_translations($translations);
+	    }
+
+	    
+
+
+
+        /*
 
 		if ($source_lang !== $this->default_language) {
 			$source_term_id = pll_get_term($term_id, $this->default_language);
@@ -584,31 +622,22 @@ class Integration {
 			$source_term_id = $term_id;
 		}
 
-		$plugin->log("Term in default lang id si(".$source_term_id.")");
-
 		$term = get_term($source_term_id, $taxonomy);
 		if (!$term || is_wp_error($term)) {
 			$GLOBALS['salt_ai_doing_translate'] = false;
 			return 0;
 		}
 
-		// 💬 Çeviri işlemleri
 		$name = $this->translate_text($term->name, $lang, "These are taxonomy terms from a WordPress site under the '{$taxonomy}' taxonomy. Translate accordingly. Dont add html tags.");
 		$name = $plugin->sanitize_translated_string($name);
 		$description = $this->translate_text($term->description, $lang, "These are taxonomy terms from a WordPress site under the '{$taxonomy}' taxonomy. Translate accordingly.");
-		/*$slug = wp_unique_term_slug(sanitize_title($name), (object)[ 'taxonomy' => $taxonomy ]);
-        if($slug == $term->slug){
-        	$slug = $slug . '-' . $lang;
-        }*/
 
         $slug = sanitize_title($name);
-		// Aynı slug varsa ve farklı ID varsa slug'ı değiştir
 		$existing_term = get_term_by('slug', $slug, $taxonomy);
 		if ($existing_term && $existing_term->term_id != $source_term_id) {
 		    $slug .= '-' . $lang;
 		}
 
-		// 💡 Varsa çevirisini al, yoksa duplicate oluştur
 		$lang_term_id = pll_get_term($source_term_id, $lang);
 		$plugin->log("lang_term_id : ".$lang_term_id);
 		if (!$lang_term_id || $lang_term_id == $source_term_id) {
@@ -617,7 +646,6 @@ class Integration {
 		    $override = ["name" => $name, "slug" => $slug."-".$lang, "description" => $description];
 			$lang_term_id = $plugin->duplicate_term($source_term_id, $override);
 
-			$plugin->log("Term in (".$lang.") versiyonu olusturuldu id:".$lang_term_id);
 			if (!$lang_term_id) {
 				$GLOBALS['salt_ai_doing_translate'] = false;
 				return 0;
@@ -626,9 +654,7 @@ class Integration {
 			$translations = pll_get_term_translations($source_term_id);
 			$translations[$lang] = $lang_term_id;
 			pll_save_term_translations($translations);
-			$plugin->log("çeviri tanımlandı...");
-			$plugin->log($translations);
-		}
+		}*/
 
 		if ($plugin->options["seo"]["image_alttext"]["generate"]) {
 			$this->extract_images_from_html($term->description);
@@ -641,16 +667,11 @@ class Integration {
 		];
 		wp_update_term($lang_term_id, $taxonomy, $args);
 
-		$plugin->log($lang_term_id." guncellendi");
-		$plugin->log($args);
-
-		// ACF Field çevirisi
 		$acf_fields = $this->translate_acf_fields("term_$lang_term_id", $lang);
 		foreach ($acf_fields as $field_key => $field_value) {
 			update_field($field_key, $field_value, "term_$lang_term_id");
 		}
 
-		// SEO Meta
 		if (
 			$options["seo"]["meta_desc"]["generate"]
 			&& (
