@@ -32,7 +32,30 @@ class Integration {
 		if(!empty($custom_prompt)){
 			$translator->set_custom_prompt($custom_prompt);
 		}
-        return $translator->translate($text, $lang);
+
+		$this->container->get("plugin")->log("input: ".$text);
+
+		$parsed = $this->plugin->cleanHTML($text);
+		$this->container->get("plugin")->log("Parsed segments");
+		$this->container->get("plugin")->log($parsed['segments']);
+        $translated_segments = [];
+        foreach ($parsed['segments'] as $segment) {
+            $translated_segments[] = $translator->translate($segment, $lang);
+        }
+        $this->container->get("plugin")->log("Translated_segments");
+        $this->container->get("plugin")->log($translated_segments);
+        $output = $this->plugin->replaceHTML(
+            $parsed['document'],
+            $parsed['text_nodes'],
+            $translated_segments,
+            $parsed['plain']
+        );
+
+        $this->container->get("plugin")->log("output: ".$output);
+        $this->container->get("plugin")->log("----------------------------");
+
+        return $output;
+        //return $translator->translate($text, $lang);
     }
 
 
@@ -134,7 +157,8 @@ class Integration {
 	                   
 						//if ($field_key && (($plugin->options["seo"]["image_alttext"]["generate"] && $this->should_translate($val)) || !$plugin->options["seo"]["image_alttext"]["generate"])){
 						if ($field_key && $plugin->options["seo"]["image_alttext"]["generate"] && !empty($val)){
-						    $field_type = $this->get_acf_field_type($field_key);
+							$acf_field_object = $this->get_acf_field_object($field_key);
+						    $field_type = $acf_field_object["type"];
                             
                             if($plugin->options["seo"]["image_alttext"]["generate"]){
 							    // 🎯 Alt text gerektiren görselleri yakala
@@ -164,7 +188,7 @@ class Integration {
 					            }
                             }
 
-				            if(is_numeric($val) || is_array($val)){
+				            if(is_numeric($val) || is_array($val) || (isset($acf_field_object["translation"]) && $acf_field_object["translation"] !== 'translate') || $acf_field_object["translation"] == "class"){
 				            	continue;
 				            }
 
@@ -412,7 +436,7 @@ class Integration {
 	    // Diğer alan tipleri (değiştirme)
 	    return $value;
 	}
-	public function get_acf_field_type($field_key) {
+	public function get_acf_field_object($field_key) {
 	    if (!is_string($field_key) || strpos($field_key, 'field_') !== 0) {
 	        return null;
 	    }
@@ -421,7 +445,7 @@ class Integration {
 	        $real_key = end($matches[0]);
 	        $field_object = get_field_object($real_key);
 	        if (is_array($field_object) && isset($field_object['type'])) {
-	            return $field_object['type'];
+	            return $field_object;//['type'];
 	        }
 	    }
 	    return null;
@@ -540,7 +564,7 @@ class Integration {
 			    $seo = $this->container->get('seo');
 		        if($options["translator"] == "openai"){
 				    $description = $seo->generate_seo_description($lang_post_id);
-				    $plugin->log("Generated meta description for: ".$post->post_title." -> ".$description);  	
+				    //$plugin->log("Generated meta description for: ".$post->post_title." -> ".$description);  	
 			    }
 			    if($options["seo"]["meta_desc"]["translate"]){	
 			        if(empty($description)){
@@ -549,7 +573,7 @@ class Integration {
 			        if(!empty($description)){
 		            	$description = $this->translate_text($description, $lang);
 		            	$seo->update_meta_description($lang_post_id, $description);
-		            	$plugin->log("Translated meta description [".$lang."] for: ".$post->post_title." -> ".$description); 
+		            	//$plugin->log("Translated meta description [".$lang."] for: ".$post->post_title." -> ".$description); 
 			        }
 				} 
 		    }
@@ -685,7 +709,7 @@ class Integration {
 
 			if ($options["translator"] === "openai") {
 				$description = $seo->generate_seo_description($lang_term_id, "term");
-				$plugin->log("Generated meta description for: ".$name." -> ".$description);
+				//$plugin->log("Generated meta description for: ".$name." -> ".$description);
 			}
 			if ($options["seo"]["meta_desc"]["translate"]) {
 				if (empty($description)) {
@@ -694,7 +718,7 @@ class Integration {
 				if (!empty($description)) {
 					$description = $this->translate_text($description, $lang);
 					$seo->update_meta_description($lang_term_id, $description, "", "term");
-					$plugin->log("Translated meta description [{$lang}] for: ".$name." -> ".$description);
+					//$plugin->log("Translated meta description [{$lang}] for: ".$name." -> ".$description);
 				}
 			}
 			$plugin->log("Meta Description: ".$description);

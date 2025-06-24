@@ -205,7 +205,7 @@ class SEOIntegration{
         $body = json_encode([
             'model' => $options["seo"]["meta_desc"]["model"] ?? 'gpt-4',
             'messages' => $messages,
-            'temperature' => (float) $options["seo"]["meta_desc"]["temperature"] ?? 0.5,
+            'temperature' => (float) $options["seo"]["meta_desc"]["temperature"] ?? $this->temperature_meta_desc,
         ]);
 
         $description = $translator->request($body);

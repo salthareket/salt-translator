@@ -161,7 +161,7 @@ class Salt_AI_Translator_Plugin {
             'translator'           => '',
             'prompt'               => '',
             'model'                => '',
-            'temperature'          => '',
+            'temperature'          => '0.3',
             'retranslate_existing' => 0,
             'auto_translate'       => 0,
             'exclude_post_types'   => [],
@@ -344,6 +344,7 @@ class Salt_AI_Translator_Plugin {
         if ($translator === 'openai') {
             $existing['prompt'] = $input['prompt'] ?? '';
             $existing['model'] = $input['model'] ?? '';
+            $existing['temperature'] = $input['temperature'] ?? '';
         }
 
         $existing['retranslate_existing'] = isset($input['retranslate_existing']) ? 1 : 0;
@@ -1217,6 +1218,99 @@ class Salt_AI_Translator_Plugin {
         $text = preg_replace('/\\\\\\\\u([0-9a-fA-F]{4})/', '\\\\u$1', $text);
         return $text;
     }
+
+    public function cleanHTML(string $html): array {
+        // Düz metin kontrolü
+        if (strip_tags($html) === $html) {
+            return [
+                'segments' => [trim($html)],
+                'document' => null,
+                'text_nodes' => null,
+                'plain' => true,
+            ];
+        }
+
+        // HTML parse et
+        $doc = new \DOMDocument();
+        libxml_use_internal_errors(true);
+        $doc->loadHTML(mb_convert_encoding($html, 'HTML-ENTITIES', 'UTF-8'), LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+        libxml_clear_errors();
+
+        $xpath = new \DOMXPath($doc);
+        $text_nodes = $xpath->query('//text()[normalize-space()]');
+
+        $segments = [];
+
+        foreach ($text_nodes as $node) {
+            $text = trim($node->nodeValue);
+
+            // 1. Tamamen boş ya da sadece &nbsp; gibi karakterlerse atla
+            if ($text === '' || preg_match('/^\x{00A0}+$/u', $text)) {
+                continue;
+            }
+
+            // 2. Shortcode gibi görünüyorsa atla (örn: [shortcode attr='x'])
+            if (preg_match('/^\[.+?\]$/s', $text)) {
+                continue;
+            }
+
+            // 3. E-posta adresleri ya da mailto: içeriyorsa atla
+            if (filter_var($text, FILTER_VALIDATE_EMAIL) || stripos($text, 'mailto:') !== false) {
+                continue;
+            }
+
+            $segments[] = $text;
+        }
+
+        return [
+            'segments' => $segments,
+            'document' => $doc,
+            'text_nodes' => $text_nodes,
+            'plain' => false,
+        ];
+    }
+
+    public function replaceHTML($document, $text_nodes, array $translated_segments, bool $plain = false): string {
+    if ($plain) {
+        return $translated_segments[0] ?? '';
+    }
+
+    $i = 0;
+    foreach ($text_nodes as $node) {
+        $original = trim($node->nodeValue);
+
+        // Aynı filtreleri burada da uygula
+        if (
+            $original === '' ||
+            preg_match('/^\x{00A0}+$/u', $original) || // nbsp
+            preg_match('/^\[.+?\]$/s', $original) || // shortcode
+            filter_var($original, FILTER_VALIDATE_EMAIL) ||
+            stripos($original, 'mailto:') !== false
+        ) {
+            continue;
+        }
+
+        if (isset($translated_segments[$i])) {
+            $node->nodeValue = htmlspecialchars_decode($translated_segments[$i], ENT_QUOTES | ENT_HTML5);
+        }
+
+        $i++;
+    }
+
+    $html = $document->saveHTML();
+
+    // body içinde sarılmışsa sadece içeriği al
+    $body_start = stripos($html, '<body>');
+    $body_end   = stripos($html, '</body>');
+
+    if ($body_start !== false && $body_end !== false) {
+        $body_start += strlen('<body>');
+        return trim(substr($html, $body_start, $body_end - $body_start));
+    }
+
+    return trim($html);
+}
+
 
 
 

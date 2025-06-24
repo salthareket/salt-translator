@@ -19,7 +19,7 @@ class Translator {
     public $model_image_alttext;
     public $custom_prompt;
     private $api_url;
-    private $prompts;
+    public $prompts;
 
     public function __construct($container) {
         $this->container = $container;
@@ -75,17 +75,22 @@ class Translator {
         $this->prompts = [
             "default" => [
                 "system" => function($lang="") use (&$options){
-                    $prompt = "You are a professional website content translator. The input may contain HTML and WordPress shortcodes.
+                    $prompt = "You are a professional website content translator. 
+                            - Target translation language: [{$lang}] 
+                            - The input may contain HTML and WordPress shortcodes.
                             - Translate only the visible text content between HTML tags.
                             - DO NOT translate or alter any HTML tags, tag names, or attribute names.
                             - DO NOT translate or alter any attribute values such as 'class', 'id', 'data-*', 'href', 'src', 'style', 'title', etc. This includes keeping all class names and data-* values exactly as they are, even if they contain human-readable words.
                             - DO NOT translate or alter any WordPress shortcodes (e.g. [shortcode], [contact_form id='x']).
+                            - Treat any text inside square brackets [...] as shortcode. DO NOT translate or interpret them.
                             - DO NOT add or remove any tags, attributes, shortcodes, spaces, or punctuation.
                             - NEVER encode or escape characters like <, >, &, ', or return unicode sequences like \\u003c.
                             - Return the result as HTML, preserving the original formatting and layout exactly.
                             - Even if the input contains a single HTML tag or short snippet, always treat it as full HTML and preserve the entire structure.
                             - Always treat the input as HTML, even if it contains a single tag or a short snippet. Do not remove or flatten the structure.
                             - Avoid translating any attribute value, even if it appears to be human language — assume all attributes are technical code.
+                            - Do NOT summarize, shorten, rephrase or reword the input in any way.
+                            - Copy the text segments exactly, word for word.
                             Your job is to translate only the human-visible content (inner text), leaving all structure, code, and attribute values untouched.";
                             if (!empty($options["prompt"])) {
                                 $prompt .= " " . trim($options["prompt"]);
@@ -96,7 +101,7 @@ class Translator {
                         return $prompt;
                 },
                 "user"   => function($lang="", $text="") use (&$options){
-                    return "Translate the following content to language code [{$lang}]: ".trim($text);
+                    return trim($text);
                 }
             ],
             "alt_text" => [
@@ -150,11 +155,9 @@ class Translator {
             $code = wp_remote_retrieve_response_code($response);
             $data = json_decode(wp_remote_retrieve_body($response), true);
 
-            $this->container->get("plugin")->log("bu nee: ".$data['choices'][0]['message']['content']);
-
             if ($code === 200 && isset($data['choices'][0]['message']['content'])) {
                 $text = $data['choices'][0]['message']['content'];
-                $text = str_replace(['<wrapper>', '</wrapper>'], '', $text);
+                //$text = str_replace(['<wrapper>', '</wrapper>'], '', $text);
                 return $text;
             }
 
@@ -176,7 +179,7 @@ class Translator {
         $this->custom_prompt = $prompt;
     }
 
-    public function translate($text = "", $to = 'en'): string {
+    public function translate($text = "", $lang = 'en'): string {
         $options = $this->container->get("plugin")->options;
 
         $text = is_null($text)?"":$text;
@@ -185,11 +188,11 @@ class Translator {
         }, $text);
         if (!$this->should_translate($text)) return $text;
         
-        if(!filter_var($text, FILTER_VALIDATE_URL)){
+        /*if(!filter_var($text, FILTER_VALIDATE_URL)){
             $text = "<wrapper>" . $text . "</wrapper>";
-        }
+        }*/
         
-        $system = $this->prompts["default"]["system"]();
+        $system = $this->prompts["default"]["system"]($lang);
         /*if (!empty($options["prompt"])) {
             $system .= " " . trim($options["prompt"]);
         }
@@ -197,7 +200,7 @@ class Translator {
             $system .= " " . trim($this->custom_prompt);
         }*/
 
-        $user = $this->prompts["default"]["user"]($to, $text);
+        $user = $this->prompts["default"]["user"]($lang, $text);
 
         $messages = [
             ['role' => 'system', 'content' => $system],
@@ -207,7 +210,7 @@ class Translator {
         $body = json_encode([
             'model' => $options["model"],
             'messages' => $messages,
-            'temperature' => $options["temperature"],
+            'temperature' => (float) $options["temperature"] ?? $this->temperature,
         ]);
 
         return $this->request($body);
@@ -262,10 +265,10 @@ class Translator {
                     ["type" => "image_url", "image_url" => ["url" => $image_url]]
                 ]
             ]],
-            "temperature" => (float) $options["seo"]["image_alttext"]["temperature"] ?? 0.4,
+            "temperature" => (float) $options["seo"]["image_alttext"]["temperature"] ?? $this->temperature_image_alttext
         ]);
 
-        $this->container->get("plugin")->log($body);
+        //$this->container->get("plugin")->log($body);
 
         return $this->request($body);
     }
