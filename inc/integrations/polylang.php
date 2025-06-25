@@ -136,11 +136,14 @@ class Integration {
 	        	if (isset($block['attrs']['data']) && is_array($block['attrs']['data'])) {
 	               foreach ($block['attrs']['data'] as $key => $val) {
 	                    $field_key = isset($block['attrs']['data']["_" . $key]) ? $block['attrs']['data']["_" . $key] : null;
+
+	                    $acf_field_object = $this->get_acf_field_object($field_key);
+	                    $field_type = $acf_field_object["type"];
 	                   
 						//if ($field_key && (($plugin->options["seo"]["image_alttext"]["generate"] && $this->should_translate($val)) || !$plugin->options["seo"]["image_alttext"]["generate"])){
 						if ($field_key && $plugin->options["seo"]["image_alttext"]["generate"] && !empty($val)){
-							$acf_field_object = $this->get_acf_field_object($field_key);
-						    $field_type = $acf_field_object["type"];
+							
+						    
                             
                             if($plugin->options["seo"]["image_alttext"]["generate"]){
 							    // 🎯 Alt text gerektiren görselleri yakala
@@ -169,18 +172,24 @@ class Integration {
 					                }
 					            }
                             }
+                        }
 
-                            //$plugin->log($acf_field_object["name"].": ".$val);
+                            $plugin->log($field_type."=".$val);
+                            if(isset($acf_field_object["translations"])){
+                            	$plugin->log("translations:".$acf_field_object["translations"]);
+                            }
 
-				            if(is_numeric($val) || is_array($val) || (isset($acf_field_object["translation"]) && $acf_field_object["translation"] !== 'translate') || $acf_field_object["name"] == "class"){
+				            if(is_numeric($val) || is_array($val) || (isset($acf_field_object["translations"]) && $acf_field_object["translations"] !== 'translate') || $acf_field_object["name"] == "class"){
+				            	continue;
+				            }
+
+				            if((isset($acf_field_object["translations"]) && $acf_field_object["translations"] !== 'translate') || $acf_field_object["name"] == "class"){
 				            	continue;
 				            }
 
 						    if (in_array($field_type, ['text', 'textarea', 'wysiwyg'])) {
 						    	$block['attrs']['data'][$key] = $this->translate_text($val, $lang);
 						    }
-
-						}
 		            } 
 	            }
 	        }
